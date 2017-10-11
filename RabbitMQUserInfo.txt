@@ -1,6 +1,8 @@
-IP = 130.239.81.221
+IP = 130.239.81.221:5672
+broker_url = 'amqp://acc9:aub1923lksad32@localhost:5672/acc9-host'
 
 Rabbit: 
     user = acc9
     pw = aub1923lksad32
     vhost = acc9-host
+    tag = acc9rabbit
