@@ -1,0 +1,6 @@
+IP = 130.239.81.221
+
+Rabbit: 
+    user = acc9
+    pw = aub1923lksad32
+    vhost = acc9-host
