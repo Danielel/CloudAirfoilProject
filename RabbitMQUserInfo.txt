@@ -6,3 +6,5 @@ Rabbit:
     pw = aub1923lksad32
     vhost = acc9-host
     tag = acc9rabbit
+    
+pip3 install flower
