@@ -1,0 +1,1 @@
+https://docs.openstack.org/senlin/latest/scenarios/autoscaling_heat.html
