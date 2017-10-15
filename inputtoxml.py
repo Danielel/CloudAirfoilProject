@@ -6,29 +6,36 @@ three = (input("What is the third parameter?\n"))
 four = (input("What is the fourth parameter?\n"))
 five = (input("What is the fifth parameter?\n"))
 
-def meshmaker(one,two,three,four, five): #the five input variables
-
+def meshmaker(one,two,three,four, five):
     os.chdir("/home/fenics/shared/murtazo/cloudnaca/")
     os.system("pwd")
     os.system("./runme.sh " + one + " " +  two +" " + three + " " +  four + " " + five)
-    #p = subprocess.Popen(["/home/fenics/shared/murtazo/cloudnaca/runme.sh", one + " " + two + " " + three + " " + four + " " + five], stdout=subprocess.PIPE)
-
-
     print("kom vi hit")
-     #ToDO/ hitta sökväg till /home/fenics/shared/murtazo/cloudnaca# ./runme.sh
-     #Så vi kan köra run me på inten
+
+def xmlConverter():
+    os.chdir("/home/fenics/shared/murtazo/cloudnaca/msh/")
+    for fileName in os.listdir("/home/fenics/shared/murtazo/cloudnaca/msh/"):
+        if fileName.endswith('.msh'):
+            os.system("dolfin-convert " + fileName + " " + fileName[:-4] + ".xml")
+
+filetoRun = "r2a9n200.xml"
+def runAirfoil(filetoRun):
+    os.chdir("/home/fenics/shared/murtazo/navier_stokes_solver/")
+    os.system("./airfoil 10 0.0001 10 0.005 ../cloudnaca/msh/" + filetoRun)
+    os.chdir("/home/fenics/shared/murtazo/navier_stokes_solver/results")
+    result = ""
+    with open  ("/home/fenics/shared/murtazo/navier_stokes_solver/results/drag_ligt.m", "r") as file:
+        result = file.read()
+    return (result, filetoRun)
+
+def resultList(resulttupple):
+    if not os.path.exists("/home/ubuntu/results"):
+        os.makedirs("/home/ubuntu/results")
+    #if os.file.exists("/home/ubuntu/results/" + resulttupple(2)) #Todo, använd det här innan vi gör mesh filerna
+    with open("/home/ubuntu/results/" + resulttupple[1],"w+") as file:
+        file.write(resulttupple[0])
 if (__name__ == '__main__'):
-    meshmaker(one, two,three,four,five)
-    #xmlConverter(one,two,three,four,five)
-    #runAirfoil()
-#def xmlConverter():
- #   for fileName in os.listdir("/home/fenics/shared/murtazo/cloudnaca/msh/"):
-        #Todo kom ihåg att kolla om vi behöver ta 
-  #      q = subprocess.Popen(["dolfin-convert " +  "/home/fenics/shared/murtazo/cloudnaca/msh" + fileName  + " " + fileName + "xml"], stdout=subprocess.PIPE)
-
-#    print(q.communicate())
-
- #   def runAirfoil():
-  #      r = subprocess.Popen(["/home/fenics/shared/murtazo/navier_stokes_solver# ./airfoil  10 0.0001 10. 1 ../cloudnaca/msh/ " + one + " " + two + " " + three +  " " + four + " " + five + "xml"], stdout=subprocess.PIPE)
-
-   #     print(r.communicate())
+    #meshmaker(one, two,three,four,five)
+    #xmlConverter()
+    #runAirfoil(filetoRun)
+    resultList(("agagabaag","itworks"))
