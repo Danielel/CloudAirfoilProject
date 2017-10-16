@@ -1,5 +1,6 @@
 import os
 import runme
+import time
 from WorkerTasks import runAirfoilOnWorker
 
 def meshmaker(one,two,three,four,five):
@@ -15,15 +16,17 @@ def xmlConverter():
             os.system("dolfin-convert " + fileName + " " + fileName[:-4] + ".xml")
             os.system("rm " + fileName)
 
-
+#fileToRun should probably end with .xml
 def runAirfoil(filetoRun):
     os.chdir("/home/fenics/shared/murtazo/cloudnaca/msh/")
     wholeDamnXmlDict = {"filename" : filetoRun, "content" : ""}
     with open(filetoRun, "r") as xmlFile:
         wholeDamnXmlDict["content"] = xmlFile.read()
-    results = runAirfoilOnWorker.delay(wholeDamnXmlDict)
-    print(results.get())
-    
+    return results = runAirfoilOnWorker.delay(wholeDamnXmlDict)
+
+#should add ".xml" to end of every name in listOfFiles in this function
+def returnResultsOfFiles(listOfFileNames):
+    return ""
 def commandAirfoilPreCheck()
 #
 # The command that runs our whole service.
@@ -33,6 +36,23 @@ def receiveCommandAirfoil(angle_start, angle_stop, n_angles, n_nodes, n_levels):
     mshToBeConverted = returnListOfMshToBeConverted(namesToCreate)
     if not mshToBeConverted:
         #no work to do all xmls have been runAirfoil instead return saved results
+        #todo calculate optimal angle
+    else:
+        meshmaker(angle_start, angle_stop, n_angles, n_nodes, n_levels)
+    
+    airfoilResultList = []
+    for fileName in mshToBeConverted:
+        airfoilResultList.append(runAirFoil(fileName + ".xml"))
+    for result in airfoilResultList:
+        while(not result.ready()):
+            time.sleep(.1)
+        content = result.get()
+        with open("/home/fenics/shared/results/" + content[1][:-4] + ".res", "w+") as file:
+            file.write(content[0])
+        
+    return returnResultsOfFiles(namesToCreate)
+    
+    
         
         
 
