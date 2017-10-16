@@ -1,10 +1,31 @@
 IP = 130.239.81.221:5672
-broker_url = 'amqp://acc9:aub1923lksad32@localhost:5672/acc9-host'
+LocalIP = 192.168.1.42:5672
+broker_url = 'amqp://acc9:aub1923lksad32@localhost:5672/acc9-server'
 
 Rabbit: 
     user = acc9
     pw = aub1923lksad32
-    vhost = acc9-host
+    vhost = acc9-server
     tag = acc9rabbit
-    
+
+sudo apt-get update
+sudo apt-get --yes --force-yes install rabbitmq-server
+
+
+sudo rabbitmqctl add_user acc9 aub1923lksad32
+sudo rabbitmqctl add_vhost acc9-server
+sudo rabbitmqctl set_user_tags acc9 administrator
+sudo rabbitmqctl set_permissions -p acc9-server acc9 ".*" ".*" ".*"
+acc9-server acc9-server.local
+
+#sudo rabbitmq-server -detached
+sudo rabbitmqctl stop
+
+sudo docker run -td -v $(pwd):/home/fenics/shared -w /home/fenics/shared acc9-docker-image
+sudo docker exec -t -i dd785034c096 /bin/bash
+
+
+sudo docker commit CONTAINER_ID nginx-template
+
+
 pip3 install flower

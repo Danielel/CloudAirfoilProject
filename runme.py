@@ -27,9 +27,8 @@ def returnListOfMshNamesToBeCreated(angle_start, angle_stop, n_angles, n_nodes, 
     
     return listOfNames
 
-def returnListOfMshToBeConverted(angle_start, angle_stop, n_angles, n_nodes, n_levels):
+def returnListOfMshToBeConverted(toBeCreated):
     existingAlready = returnListOfExistingMshNames()
-    toBeCreated = returnListOfMshNamesToBeCreated(angle_start, angle_stop, n_angles, n_nodes, n_levels)
     listToBeConverted = []
     for name in toBeCreated:
         if not (name+".msh") in existingAlready:
