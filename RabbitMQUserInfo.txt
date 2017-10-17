@@ -24,8 +24,7 @@ sudo rabbitmqctl stop
 sudo docker run -td -v $(pwd):/home/fenics/shared -w /home/fenics/shared acc9-docker-image
 sudo docker exec -t -i dd785034c096 /bin/bash
 
+celery -A WorkerTasks worker --loglevel=info
+
 
 sudo docker commit CONTAINER_ID nginx-template
-
-
-pip3 install flower
