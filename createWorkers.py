@@ -76,6 +76,7 @@ def createWorker(instanceName):
 
     while inst_status == 'BUILD':
         print( "Instance: "+instance.name+" is in "+inst_status+" state, sleeping for 5 seconds more...")
+        time.sleep(3)
         instance = nova.servers.get(instance.id)
         inst_status = instance.status
 

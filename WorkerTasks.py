@@ -16,6 +16,7 @@ worker_prefetch_multiplier=1,
 
 @app.task
 def runAirfoilOnWorker(wholeDamnXmlDict):
+    return runAirfoilOnWorkerWithAirfoilArgs(wholeDamnXmlDict, 10, 0.0001, 10, 0.1)
 
 #10 samples, run with the viscosity
 #of nu=0.0001 and speed of v=10.0, total time is T=1
