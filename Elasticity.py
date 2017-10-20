@@ -7,8 +7,8 @@ import WorkerTasks
 import createWorkers
 import signal
 
-minimum_workers = 1
-max_workers = int(sys.argv[1])
+minimum_workers = int(sys.argv[1])
+max_workers = int(sys.argv[2])
 
 def busyWorkers():
     busyWorkers = 0
