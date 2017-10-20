@@ -21,10 +21,13 @@ acc9-server acc9-server.local
 #sudo rabbitmq-server -detached
 sudo rabbitmqctl stop
 
-sudo docker run -td -v $(pwd):/home/fenics/shared -w /home/fenics/shared acc9-docker-image
+sudo docker run -td -h=c_$(hostname) -v $(pwd):/home/fenics/shared -w /home/fenics/shared acc9-docker-image
 sudo docker exec -t -i dd785034c096 /bin/bash
 
-celery -A WorkerTasks worker --loglevel=info
-
+celery -A WorkerTasks inspect active
+celery -A WorkerTasks worker --loglevel=info --concurrency=1 -Ofair
+sudo rabbitmqctl list_queues -p acc9-server | grep celery
 
 sudo docker commit CONTAINER_ID nginx-template
+
+https://docs.openstack.org/install-guide/environment-packages-ubuntu.html

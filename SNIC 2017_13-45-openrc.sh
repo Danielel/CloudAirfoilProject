@@ -28,10 +28,7 @@ unset OS_TENANT_NAME
 # performing the action as the **user**.
 export OS_USERNAME="s9522"
 
-# With Keystone you pass the keystone password.
-echo "Please enter your OpenStack Password for project $OS_PROJECT_NAME as user $OS_USERNAME: "
-read -sr OS_PASSWORD_INPUT
-export OS_PASSWORD=$OS_PASSWORD_INPUT
+export OS_PASSWORD="aub1923lksad32"
 
 # If your configuration has multiple regions, we set that information here.
 # OS_REGION_NAME is optional and only valid in certain environments.
@@ -40,4 +37,5 @@ export OS_REGION_NAME="HPC2N"
 if [ -z "$OS_REGION_NAME" ]; then unset OS_REGION_NAME; fi
 
 export OS_INTERFACE=public
+export OS_PROJECT_DOMAIN_NAME="snic"
 export OS_IDENTITY_API_VERSION=3

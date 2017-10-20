@@ -52,7 +52,26 @@ def returnResultsOfFiles(listOfFileNames):
 #
 # The command that runs our whole service.
 #
-def receiveCommandAirfoil(angle_start, angle_stop, n_angles, n_nodes, n_levels):
+def deleteFilesInFolder():
+    try:
+        for fileName in os.listdir("/home/fenics/shared/murtazo/cloudnaca/geo"):
+            os.remove("/home/fenics/shared/murtazo/cloudnaca/geo/" + fileName)
+    except OSError:
+        pass
+    try:
+        for fileName in os.listdir("/home/fenics/shared/murtazo/cloudnaca/msh"):
+            os.remove("/home/fenics/shared/murtazo/cloudnaca/msh/" + fileName)
+    except OSError:
+        pass
+    try:
+        for fileName in os.listdir("/home/fenics/shared/results"):
+            os.remove("/home/fenics/shared/results/" + fileName)
+    except OSError:
+        pass
+
+def receiveCommandAirfoil(angle_start, angle_stop, n_angles, n_nodes, n_levels, deleteFiles):
+    if(deleteFiles):
+        deleteFilesInFolder()
     namesToCreate = runme.returnListOfMshNamesToBeCreated(angle_start, angle_stop, n_angles, n_nodes, n_levels)
     mshToBeConverted = runme.returnListOfMshToBeConverted(namesToCreate)
     #print(namesToCreate)
@@ -94,10 +113,14 @@ if __name__ == '__main__':
     three=sys.argv[3]
     four=sys.argv[4]
     five=sys.argv[5]
+    delete = False
+    if len(sys.argv) > 6:
+        if sys.argv[6] == "-d":
+            delete = True
     #one = (input("What is the first parameter?\n"))
     #two = (input("What is the second parameter?\n"))
     #three = (input("What is the third parameter?\n"))
     #four = (input("What is the fourth parameter?\n"))
     #five = (input("What is the fifth parameter?\n"))
-    receiveCommandAirfoil(one,two,three,four,five)
+    receiveCommandAirfoil(one,two,three,four,five, delete)
     

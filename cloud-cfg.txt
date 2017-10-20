@@ -2,28 +2,44 @@
 
 apt_update: true
 apt_upgrade: true
-packages:
- - python-pip
- - python-dev
- - build-essential
+#packages:
+# - python-pip
+# - python-dev
+# - build-essential
 byobu_default: system 
 
 write_files:
-  - path: /home/ubuntu/cowsay-app.py
+  - path: /home/ubuntu/WorkerTasks.py
     content: |
-      from flask import Flask, jsonify
-      import subprocess
-      import sys
-      app = Flask(__name__)
-      @app.route('/cowsay/api/v1.0/saysomething', methods=['GET'])
-      def cow_say():
-          data=subprocess.check_output(["cowsay","Hello student"])
-          return data
-      if __name__ == '__main__':
-          app.run(host='0.0.0.0',debug=True)
+        from celery import Celery
+        import os
+        app = Celery('WorkerTasks', backend='rpc://', broker=broker_url)
+        app.conf.update(worker_prefetch_multiplier=1, task_acks_late = True)
+        @app.task
+        def runAirfoilOnWorker(wholeDamnXmlDict):
+
+        #10 samples, run with the viscosity
+        #of nu=0.0001 and speed of v=10.0, total time is T=1
+        @app.task
+        def runAirfoilOnWorkerWithAirfoilArgs(wholeDamnXmlDict, samples, viscosity, speed, time):
+            if not os.path.exists("/home/fenics/shared/receivedXML/"):
+                os.makedirs("/home/fenics/shared/receivedXML/")
+            os.chdir("/home/fenics/shared/receivedXML/")
+            with open(wholeDamnXmlDict["filename"], "w+") as xmlFile:
+                xmlFile.write(wholeDamnXmlDict["content"])
+            os.chdir("/home/fenics/shared/murtazo/navier_stokes_solver/")
+            airfoilText = "./airfoil " + str(samples) + " " + str(viscosity) + " " + str(speed) + " " + str(time) + " /home/fenics/shared/receivedXML/"
+            os.system(airfoilText + wholeDamnXmlDict["filename"])
+            os.chdir("/home/fenics/shared/murtazo/navier_stokes_solver/results")
+            result = ""
+            with open("/home/fenics/shared/murtazo/navier_stokes_solver/results/drag_ligt.m", "r") as file:
+                result = file.read()
+            return (result, wholeDamnXmlDict["filename"])
+
 
 runcmd:
- - echo "export PATH=$PATH:/usr/games" >> /home/ubuntu/.bashrc  
+ - cd /home/ubuntu
+ - echo "export LC_ALL=C" >> .bashrc
  - source /home/ubuntu/.bashrc
- - pip install Flask
- - python /home/ubuntu/cowsay-app.py & 
+ - 'sudo docker run -td -h=c_$(hostname) -v /home/ubuntu:/home/fenics/shared -w /home/fenics/shared acc9-docker-image'
+ - 'sudo docker exec -d $(sudo docker ps -l -q) celery -A WorkerTasks worker --loglevel=INFO --concurrency=1 -Ofair'
